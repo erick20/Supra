@@ -14,6 +14,19 @@ namespace Supra.Controllers
 {
     public class AccountController : Controller
     {
+        [HttpPost]
+        public void RegisterByPhone([FromBody] string PhoneNumber)
+        {
+            
+        }
+
+        public bool CheckPhoneExist()
+        {
+            return false;
+        }
+
+
+
         private List<Person> people = new List<Person>
         {
             new Person {Login="admin@gmail.com", Password="12345", Role = "admin" },
