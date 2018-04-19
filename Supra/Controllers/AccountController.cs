@@ -9,20 +9,55 @@ using System.IdentityModel.Tokens.Jwt;
 using Supra.Classes;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using System.Data;
 
 namespace Supra.Controllers
 {
     public class AccountController : Controller
     {
+        Datamanager dm;
+        DataTable Dt;
+        string SqlQuery = "";
+
+
+        [Route("api/account/registerbyphone")]
         [HttpPost]
-        public void RegisterByPhone([FromBody] string PhoneNumber)
+        public void RegisterByPhone([FromBody] string phone)
         {
-            
+            if (CheckPhoneExist(phone))
+            {
+                int smscode = SMS.SmsCode();
+                dm = new Datamanager();
+                SqlQuery = SqlQuery = "EXEC spwRegisterPhone @phone = " + SQL.String(phone) + "@code = " + SQL.String(smscode);
+                Dt = dm.RunQuery(SqlQuery);
+            }
+            else
+            {
+                // this number already registerated
+            }
+            //phone = ParsePhone(phone);
         }
 
-        public bool CheckPhoneExist()
+        public bool CheckPhoneExist(string PHONE)
         {
-            return false;
+            bool exist = false;
+            try
+            {
+                dm = new Datamanager();
+                SqlQuery = SqlQuery = "EXEC spwCheckPhoneExist @phone = " + SQL.String(PHONE);
+                Dt = dm.RunQuery(SqlQuery);
+                var ExistStr = Dt.Rows[0][0].ToString();
+
+                if (ExistStr == "1")
+                {
+                    exist = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                // ex code
+            }
+            return exist;
         }
 
 
@@ -33,7 +68,7 @@ namespace Supra.Controllers
             new Person { Login="qwerty", Password="55555", Role = "user" }
         };
 
-        [HttpPost("/token")]
+        //[HttpPost("/token")]
         public async Task Token()
         {
             Datamanager dm = new Datamanager();

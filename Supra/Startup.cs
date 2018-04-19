@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
 using Supra.Infrastructure;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace Supra
 {
@@ -31,7 +32,12 @@ namespace Supra
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            services.Configure<ApplicationSettings>(Configuration.GetSection("Connection"));
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "Contacts API", Version = "v1" });
+            });
+
+            //services.Configure<ApplicationSettings>(Configuration.GetSection("Connection"));
             //services.AddTransient<>
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
@@ -78,7 +84,15 @@ namespace Supra
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
-            app.UseMiddleware<AuthorizeCorrectlyMiddleware>();
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Contacts API V1");
+            });
+
+
+            //app.UseMiddleware<AuthorizeCorrectlyMiddleware>();
 
             app.UseAuthentication();
             app.UseMvc();

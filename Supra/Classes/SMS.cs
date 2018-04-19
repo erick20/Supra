@@ -45,7 +45,7 @@ namespace Supra.Classes
 
             return p_text;
         }
-                
+               
         public bool SendSMSParadox(string text, string surl, string slogin, string spassword, string phone, string sName)
         {
             text = text.Replace("\r", "");
@@ -69,6 +69,12 @@ namespace Supra.Classes
                 return false;
             }
 
+        }
+        //generate random 4 digit number for sms confirmation
+        public static int SmsCode()
+        {
+            Random random = new Random();
+            return random.Next(1000, 9999);
         }
 
         public bool SendSMSParadoxInt(string text, string surl, string slogin, string spassword, string phone)
