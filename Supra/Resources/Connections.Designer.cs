@@ -61,7 +61,34 @@ namespace Supra.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Data Source=IDRAM-CRAGOG\\SQLEXPRESS;Initial Catalog=Supra;Integrated Security=True;MultipleActiveResultSets=True.
+        ///   Looks up a localized string similar to inf_idram.
+        /// </summary>
+        internal static string SMS_LOGIN_PARADOX {
+            get {
+                return ResourceManager.GetString("SMS_LOGIN_PARADOX", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to i221LmD84.
+        /// </summary>
+        internal static string SMS_PASSWORD_PARADOX {
+            get {
+                return ResourceManager.GetString("SMS_PASSWORD_PARADOX", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to https://msg.am/Xml_Api/index.php.
+        /// </summary>
+        internal static string SMS_URL_PARADOX {
+            get {
+                return ResourceManager.GetString("SMS_URL_PARADOX", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data Source=IDRAM-CRAGOG\SQLEXPRESS;Initial Catalog=Supra;Integrated Security=True;MultipleActiveResultSets=True.
         /// </summary>
         internal static string SqlConnection {
             get {

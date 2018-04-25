@@ -35,7 +35,7 @@ namespace Supra.Classes
         private SqlCommand cmd = null;
 
 
-        public string getConfig(string key)
+        public static string getValue(string key)
         {
             //return configuration.GetConnectionString(key);
             ResourceManager rm = new ResourceManager("Supra.Resources.Connections", Assembly.GetExecutingAssembly());
@@ -52,7 +52,7 @@ namespace Supra.Classes
             {
                 try
                 {
-                    dbConn = new SqlConnection(getConfig("Connection"));
+                    dbConn = new SqlConnection(getValue("SqlConnection"));
                     dbConn.Open();
                 }
                 catch (Exception ex)

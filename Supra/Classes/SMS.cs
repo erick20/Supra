@@ -51,6 +51,7 @@ namespace Supra.Classes
             text = text.Replace("\r", "");
 
             //ServicePointManager.CertificatePolicy = new MyCertificatePolicy();
+            //System.Net.ServicePointManager.CertificatePolicy = new MyCertificatePolicy();
             ReqMaker req = new ReqMaker();
 
             string Data = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><xml_request name=\"sms_send\"><xml_user lgn=\"" + slogin + "\" pwd=\"" + spassword + "\"/><sms sms_id=\"" + (new Random()).Next(0, 999999999) + "\" number=\"" + phone + "\" source_number=\"" + sName + "\" ttl=\"10\">" + text + "</sms></xml_request>";

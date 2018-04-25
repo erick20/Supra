@@ -3,25 +3,80 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
+using Supra.Classes;
+using System.Data;
 using Microsoft.AspNetCore.Http;
 using System.IdentityModel.Tokens.Jwt;
-using Supra.Classes;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using System.Data;
+using System.Security.Claims;
+using Supra.Models.SignUpModels;
 
 namespace Supra.Controllers
 {
-   
-    public class AccountController : Controller
+    public class SignUpController : Controller
     {
         Datamanager dm;
         DataTable Dt;
         string SqlQuery = "";
 
 
-        
+        [Route("api/signup/registerbyphone")]
+        [HttpPost]
+        public void RegisterByPhone([FromBody] PhoneNumber obj)
+        {
+            int smscode = SMS.SmsCode();
+            if (!CheckPhoneExist(obj.Phone)) // add ! character 
+            {
+                
+                dm = new Datamanager();
+                SqlQuery = SqlQuery = "EXEC spwRegisterPhone @phone = " + SQL.String(obj.Phone) + ", @code = " + SQL.String(smscode);
+                Dt = dm.RunQuery(SqlQuery);
+                // send sms code
+                string paradoxLogin = Datamanager.getValue("SMS_LOGIN_PARADOX");
+                string paradoxUrl = Datamanager.getValue("SMS_URL_PARADOX");
+                string paradoxPassword = Datamanager.getValue("SMS_PASSWORD_PARADOX");
+
+                SMS sms = new SMS();
+                sms.SendSMSParadox(smscode.ToString(), paradoxUrl,paradoxLogin,paradoxPassword,obj.Phone, "Idram-LLC");
+
+
+            }
+            else
+            {
+                // this number already registrated
+                string paradoxLogin = Datamanager.getValue("SMS_LOGIN_PARADOX");
+                string paradoxUrl = Datamanager.getValue("SMS_URL_PARADOX");
+                string paradoxPassword = Datamanager.getValue("SMS_PASSWORD_PARADOX");
+
+                SMS sms = new SMS();
+                sms.SendSMSParadox(smscode.ToString(), paradoxUrl, paradoxLogin, paradoxPassword, obj.Phone, "Idram-LLC");
+            }
+            //phone = ParsePhone(phone);
+        }
+
+        public bool CheckPhoneExist(string PHONE)
+        {
+            bool exist = false;
+            try
+            {
+                dm = new Datamanager();
+                SqlQuery = SqlQuery = "EXEC spwCheckPhoneExist @phone = " + SQL.String(PHONE);
+                Dt = dm.RunQuery(SqlQuery);
+                var ExistStr = Dt.Rows[0][0].ToString();
+
+                if (ExistStr == "1")
+                {
+                    exist = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                // ex code
+            }
+            return exist;
+        }
+
 
 
         private List<Person> people = new List<Person>
