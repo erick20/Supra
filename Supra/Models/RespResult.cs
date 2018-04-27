@@ -13,4 +13,5 @@ namespace Supra.Models
 
         public dynamic RESULT { get; set; }
     }
+
 }

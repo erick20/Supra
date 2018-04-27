@@ -11,20 +11,25 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System.Security.Claims;
 using Supra.Models.SignUpModels;
+using Supra.Models;
 
 namespace Supra.Controllers
 {
+    [Produces("application/json")]
+    //[Route("api/SignUp/[Action]")]
     public class SignUpController : Controller
     {
+        RespResult Result;
         Datamanager dm;
         DataTable Dt;
         string SqlQuery = "";
 
 
-        [Route("api/signup/registerbyphone")]
+        [Route("api/SignUp/registerbyphone")]
         [HttpPost]
-        public void RegisterByPhone([FromBody] PhoneNumber obj)
+        public RespResult RegisterByPhone([FromBody] PhoneNumber obj)
         {
+            bool OkSms;
             int smscode = SMS.SmsCode();
             if (!CheckPhoneExist(obj.Phone)) // add ! character 
             {
@@ -38,8 +43,16 @@ namespace Supra.Controllers
                 string paradoxPassword = Datamanager.getValue("SMS_PASSWORD_PARADOX");
 
                 SMS sms = new SMS();
-                sms.SendSMSParadox(smscode.ToString(), paradoxUrl,paradoxLogin,paradoxPassword,obj.Phone, "Idram-LLC");
+                OkSms = sms.SendSMSParadox(smscode.ToString(), paradoxUrl,paradoxLogin,paradoxPassword,obj.Phone, "Idram-LLC");
 
+                if (OkSms)
+                {
+                    Result = Methods.GetErrorDesc(0, null);
+                }
+                else
+                {
+
+                }
 
             }
             else
@@ -53,7 +66,59 @@ namespace Supra.Controllers
                 sms.SendSMSParadox(smscode.ToString(), paradoxUrl, paradoxLogin, paradoxPassword, obj.Phone, "Idram-LLC");
             }
             //phone = ParsePhone(phone);
+            return Result;
         }
+
+        [Route("api/signup/ConfirmSmsCode")]
+        [HttpPost]
+        public RespResult ConfirmSmsCode([FromBody]ConfirmSmsCode obj)
+        {
+            if (!string.IsNullOrEmpty(obj.Phone) && !string.IsNullOrEmpty(obj.Code))
+            {
+                dm = new Datamanager();
+                SqlQuery = SqlQuery = "EXEC spwGetConfirmSmsCode @phone = " + SQL.String(obj.Phone) + ", @code = " + SQL.String(obj.Code);
+                Dt = dm.RunQuery(SqlQuery);
+                if (Dt.Rows[0][0].ToString() == "1")
+                {
+                    Result = Methods.GetErrorDesc(0, null);
+                }
+                else
+                {
+                    //return incorrect parameters
+                }
+            }
+            else
+            {
+                // return null parameter
+            }
+            return Result;
+        }
+
+        [Route("api/signup/CreatePassword")]
+        [HttpPost]
+        public RespResult CreatePassword([FromBody]CreatePassword obj)
+        {
+            if (!string.IsNullOrEmpty(obj.Password))
+            {
+                dm = new Datamanager();
+                SqlQuery = SqlQuery = "EXEC spwGetConfirmSmsCode @phone = " + SQL.String(obj.Password);
+                Dt = dm.RunQuery(SqlQuery);
+                if (Dt.Rows[0][0].ToString() == "1")
+                {
+                    Result = Methods.GetErrorDesc(0, null);
+                }
+                else
+                {
+                    //return incorrect parameters
+                }
+            }
+            else
+            {
+                // return null parameter
+            }
+            return Result;
+        }
+
 
         public bool CheckPhoneExist(string PHONE)
         {

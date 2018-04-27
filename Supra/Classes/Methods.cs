@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Resources;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Supra.Classes
 {
@@ -22,7 +23,7 @@ namespace Supra.Classes
         }
 
 
-        public static RespResult GetErrorDesc(int code, dynamic res)
+        public static dynamic GetErrorDesc(int code, dynamic res)
         {
             ResourceManager rm = new ResourceManager("Supra.Resources.ErrorCodes", Assembly.GetExecutingAssembly());
 
@@ -31,7 +32,7 @@ namespace Supra.Classes
             result.opCode = code;
             result.opDesc = rm.GetString(code.ToString());
             result.RESULT = res;
-            return result;
+            return JsonConvert.SerializeObject(result);
         }
 
         public static bool IsNumeric(string s)

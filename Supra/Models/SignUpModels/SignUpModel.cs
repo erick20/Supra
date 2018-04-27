@@ -13,4 +13,16 @@ namespace Supra.Models.SignUpModels
     {
         public string Phone { get; set; }
     }
+    public class ConfirmSmsCode
+    {
+        public string Phone { get; set; }
+
+        public string Code { get; set; }
+    }
+    public class CreatePassword
+    {
+        public string Password { get; set; }
+
+        //public string ConfirmPassword { get; set; }
+    }
 }

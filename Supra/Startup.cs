@@ -14,6 +14,9 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
 using Supra.Infrastructure;
 using Swashbuckle.AspNetCore.Swagger;
+using System.Reflection;
+using NSwag.AspNetCore;
+using NJsonSchema;
 
 namespace Supra
 {
@@ -37,6 +40,8 @@ namespace Supra
             {
                 c.SwaggerDoc("v1", new Info { Title = "Contacts API", Version = "v1" });
             });
+
+
 
             //services.Configure<ApplicationSettings>(Configuration.GetSection("Connection"));
             //services.AddTransient<>
@@ -86,11 +91,17 @@ namespace Supra
             app.UseStaticFiles();
 
             app.UseSwagger();
-
+            
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Contacts API V1");
             });
+
+            // Enable the Swagger UI middleware and the Swagger generator
+            //app.UseSwaggerUI(typeof(Startup).GetTypeInfo().Assembly, settings =>
+            //{
+            //    settings.GeneratorSettings.DefaultPropertyNameHandling = PropertyNameHandling.CamelCase;
+            //});
 
 
             //app.UseMiddleware<AuthorizeCorrectlyMiddleware>();
